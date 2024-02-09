@@ -17,18 +17,54 @@
       border: 1px solid #ccc;
       padding: 20px;
       background-color: #fff;
+      position: relative;
+      height: 400px;
     }
 
     #message-box {
-      width: 100%;
+      width: calc(100% - 60px); /* Adjusting width to accommodate send button */
       padding: 10px;
       box-sizing: border-box;
-      margin-top: 10px;
+      margin-top: 40px;
+      float: left; /* Align the input box to the left */
+    }
+
+    #send-button {
+      width: 50px;
+      padding: 10px;
+      box-sizing: border-box;
+      margin-top: 40px;
+      margin-left: 10px; /* Adding margin to separate the button from the input box */
+      float: left; /* Align the button to the left */
+      background-color: #007bff; /* Blue */
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #send-button:hover {
+      background-color: #0056b3; /* Darker Blue */
     }
 
     #chat-box {
+      clear: both; /* Clear floats to ensure chat messages appear below input box and button */
       height: 300px;
       overflow-y: scroll;
+    }
+
+    .message-container {
+      text-align: right; /* Align sent messages to the right */
+      margin-bottom: 10px;
+    }
+
+    .message {
+      background-color: #87CEEB; /* Sky Blue */
+      color: #fff;
+      padding: 10px 15px;
+      border-radius: 20px; /* Adjust border-radius to make the cloud shape */
+      max-width: 70%; /* Adjust maximum width of message container */
+      display: inline-block;
     }
   </style>
 </head>
@@ -36,26 +72,61 @@
   <div id="chat-container">
     <div id="chat-box"></div>
     <input type="text" id="message-box" placeholder="Type your message...">
+    <button id="send-button">Send</button> <!-- Added send button -->
   </div>
 
   <script>
     const chatBox = document.getElementById('chat-box');
     const messageBox = document.getElementById('message-box');
+    const sendButton = document.getElementById('send-button');
 
-    messageBox.addEventListener('keydown', function (event) {
-      if (event.key === 'Enter' && messageBox.value.trim() !== '') {
-        sendMessage(messageBox.value.trim());
+    // Load messages from localStorage when the page loads
+    window.onload = function() {
+      const messages = JSON.parse(localStorage.getItem('chatMessages')) || [];
+      messages.forEach(message => {
+        appendMessage(message);
+      });
+    }
+
+    sendButton.addEventListener('click', function () {
+      const message = messageBox.value.trim();
+      if (message !== '') {
+        sendMessage(message);
         messageBox.value = '';
       }
     });
 
+    messageBox.addEventListener('keydown', function (event) {
+      if (event.key === 'Enter') {
+        const message = messageBox.value.trim();
+        if (message !== '') {
+          sendMessage(message);
+          messageBox.value = '';
+        }
+      }
+    });
+
     function sendMessage(message) {
+      appendMessage(message);
+      saveMessage(message);
+    }
+
+    function appendMessage(message) {
+      const messageContainer = document.createElement('div');
       const messageElement = document.createElement('div');
       messageElement.textContent = message;
-      chatBox.appendChild(messageElement);
-
+      messageElement.classList.add('message');
+      messageContainer.classList.add('message-container');
+      messageContainer.appendChild(messageElement);
+      chatBox.appendChild(messageContainer);
       // Scroll to the bottom of the chat box
       chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function saveMessage(message) {
+      let messages = JSON.parse(localStorage.getItem('chatMessages')) || [];
+      messages.push(message);
+      localStorage.setItem('chatMessages', JSON.stringify(messages));
     }
   </script>
 </body>
