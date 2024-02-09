@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f0f0f0;
+    }
+
+    #chat-container {
+      max-width: 600px;
+      margin: 50px auto;
+      border: 1px solid #ccc;
+      padding: 20px;
+      background-color: #fff;
+    }
+
+    #message-box {
+      width: 100%;
+      padding: 10px;
+      box-sizing: border-box;
+      margin-top: 10px;
+    }
+
+    #chat-box {
+      height: 300px;
+      overflow-y: scroll;
+    }
+  </style>
+</head>
+<body>
+  <div id="chat-container">
+    <div id="chat-box"></div>
+    <input type="text" id="message-box" placeholder="Type your message...">
+  </div>
+
+  <script>
+    const chatBox = document.getElementById('chat-box');
+    const messageBox = document.getElementById('message-box');
+
+    messageBox.addEventListener('keydown', function (event) {
+      if (event.key === 'Enter' && messageBox.value.trim() !== '') {
+        sendMessage(messageBox.value.trim());
+        messageBox.value = '';
+      }
+    });
+
+    function sendMessage(message) {
+      const messageElement = document.createElement('div');
+      messageElement.textContent = message;
+      chatBox.appendChild(messageElement);
+
+      // Scroll to the bottom of the chat box
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+  </script>
+</body>
+</html>
